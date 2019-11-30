@@ -1,0 +1,6 @@
+/bin/
+/node_modules/
+configmap.yml
+kubeconfig.yml
+Pulumi.*.yaml
+package-lock.json
