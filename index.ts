@@ -16,7 +16,7 @@ import './src/nginx';
 
 const kubeconf = eks.kubeconfig;
 
-const configMap = eks.eksConfigmap;
+// const configMap = eks.eksConfigmap;
 
 // if(!isDryRun()){
 //   fs.writeFileSync("kubeconf.yaml",kubeconf.get());
@@ -27,7 +27,7 @@ if (!isDryRun()) {
   kubeconf.apply(async kubeconfig => {
     await new Promise(resolve => fs.writeFile(`./kubeconfig.yml`, kubeconfig, resolve))
   })
-  configMap.apply(async confgiMap=>{
-    await new Promise(resolve => fs.writeFile(`./configmap.yml`, confgiMap, resolve))
-  });
+  // configMap.apply(async confgiMap=>{
+  //   await new Promise(resolve => fs.writeFile(`./configmap.yml`, confgiMap, resolve))
+  // });
 }

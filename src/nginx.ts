@@ -1,17 +1,23 @@
 import * as k8s from "@pulumi/kubernetes";
 import * as eks from "./eks";
-import * as iam from "./iam";
 
 const provider = eks.provider;
 
-const name = "hellons";
-const ns = new k8s.core.v1.Namespace(name, {}, { provider: provider });
-// Export the Namespace name
+const name = "hello-world";
+const ns = new k8s.core.v1.Namespace(name, {
+  metadata:{
+    name:name
+  }
+}, { 
+  provider: provider 
+});
+
 export const namespaceName = ns.metadata.name;
 
 const nginxLabels = { app: "nginx" };
 const nginxDeployment = new k8s.apps.v1.Deployment("nginx-deployment", {
     metadata:{
+      name: name,
       namespace: namespaceName,
     },
     spec: {
