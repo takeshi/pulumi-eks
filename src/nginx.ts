@@ -2,9 +2,7 @@ import * as k8s from "@pulumi/kubernetes";
 import * as eks from "./eks";
 import * as iam from "./iam";
 
-const provider = new k8s.Provider("k8s",{
-  kubeconfig:eks.kubeconfig
-})
+const provider = eks.provider;
 
 const name = "hellons";
 const ns = new k8s.core.v1.Namespace(name, {}, { provider: provider });

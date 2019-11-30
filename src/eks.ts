@@ -84,7 +84,7 @@ data:
 `
 })
 
-const provider = new k8s.Provider("k8s",{
+export const provider = new k8s.Provider("k8s",{
   kubeconfig:kubeconfig
 })
 

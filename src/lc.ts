@@ -79,7 +79,8 @@ export const lc = new aws.ec2.LaunchConfiguration("eks-lc", {
   securityGroups: [sg.clusterWorkerSG.id],
   //   user_data_base64 = "${base64encode(local.userdata)}"
   userDataBase64: userdata.apply(userdata=>{
-    var buffer1 = new Buffer(userdata, 'ascii');
+    // var buffer1 = new Buffer(userdata, 'ascii');
+    var buffer1 = Buffer.from(userdata, 'ascii');
     var base64 = buffer1.toString('base64');
     return base64;
   })
