@@ -1,8 +1,9 @@
-import * as eks from './src/eks';
-import { isDryRun } from '@pulumi/pulumi/runtime';
 import * as fs from 'fs';
-import './src/asg';
-import * as nginx from './src/nginx';
+import { isDryRun } from '@pulumi/pulumi/runtime';
+
+import * as eks from './src/4.eks';
+import './src/5.asg';
+import * as nginx from './src/6.k8s-nginx';
 
 const kubeconf = eks.kubeconfig;
 
@@ -13,3 +14,4 @@ if (!isDryRun()) {
 }
 
 export const frontendIp = nginx.frontendIp;
+
