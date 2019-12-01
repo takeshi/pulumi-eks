@@ -13,7 +13,7 @@ export const eksNode = k8sx.getEksAmi(eks.eksCluster);
 
 export const launchConfiguration = new aws.ec2.LaunchConfiguration("eks-lc", {
   associatePublicIpAddress: true,
-  iamInstanceProfile: iam.eksNodeRoleProfile.id,
+  iamInstanceProfile: iam.eksWorkerRole.instanceProfile.id,
   imageId: eksNode.imageId,
   instanceType: "t3.medium",
   namePrefix: "eks-node",

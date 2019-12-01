@@ -28,7 +28,7 @@ export const clusterMasterSG = new aws.ec2.SecurityGroup("cluster-master", {
 
 export const clusterWorkerSG = new aws.ec2.SecurityGroup("cluster-worker", {
   name: "cluster-worker",
-  description: "EKS cluster master security group",
+  description: "EKS cluster worker security group",
 
   vpcId: vpc.id,
 

@@ -1,14 +1,16 @@
-import * as aws from "@pulumi/aws"
-import * as k8s from "@pulumi/kubernetes"
-import * as pulumi from "@pulumi/pulumi"
+import * as aws from "@pulumi/aws";
+import * as k8s from "@pulumi/kubernetes";
+import * as pulumi from "@pulumi/pulumi";
 
-export function kubeconfig(eksCluster:aws.eks.Cluster){
-  return pulumi.all([
-    eksCluster.endpoint,
-    eksCluster.certificateAuthority,
-    eksCluster.name
-  ]).apply(([endpoint,certificateAuthority,name])=>{
-  return `
+export function kubeconfig(eksCluster: aws.eks.Cluster) {
+  return pulumi
+    .all([
+      eksCluster.endpoint,
+      eksCluster.certificateAuthority,
+      eksCluster.name
+    ])
+    .apply(([endpoint, certificateAuthority, name]) => {
+      return `
   apiVersion: v1
   clusters:
   - cluster:
@@ -33,53 +35,57 @@ export function kubeconfig(eksCluster:aws.eks.Cluster){
           - "token"
           - "-i"
           - "${name}"
-  `});
-
-}
-
-export function awsAuthConfigMap(eksWorkerRole:aws.iam.Role,provider:k8s.Provider){
-  return new k8s.core.v1.ConfigMap("aws-auth",{
-    metadata:{
-      name:"aws-auth",
-      namespace:"kube-system"
-    },
-    data:{
-      mapRoles: eksWorkerRole.arn.apply(arn=>{
-        return`- rolearn: ${arn}
-    username: system:node:{{EC2PrivateDNSName}}
-    groups:
-      - system:bootstrappers
-      - system:nodes
   `;
-      })
-    }
-  },{
-    provider:provider
-  })
-  
+    });
 }
 
-export function eksUserDataBase64(eksCluster:aws.eks.Cluster){
+export function awsAuthConfigMap(
+  eksWorkerRole: aws.iam.Role,
+  provider: k8s.Provider
+) {
+  return new k8s.core.v1.ConfigMap(
+    "aws-auth",
+    {
+      metadata: {
+        name: "aws-auth",
+        namespace: "kube-system"
+      },
+      data: {
+        mapRoles: eksWorkerRole.arn.apply(arn => {
+          return `- rolearn: ${arn}
+  username: system:node:{{EC2PrivateDNSName}}
+  groups:
+   - system:bootstrappers
+   - system:nodes
+`;
+        })
+      }
+    },
+    {
+      provider: provider
+    }
+  );
+}
+
+export function eksUserDataBase64(eksCluster: aws.eks.Cluster) {
   return pulumi
-  .all([
-    eksCluster.endpoint,
-    eksCluster.certificateAuthority,
-    eksCluster.name
-  ])
-  .apply(([endpoint, certificateAuthority, name]) => {
-        
-    const userdata = `#!/bin/bash
+    .all([
+      eksCluster.endpoint,
+      eksCluster.certificateAuthority,
+      eksCluster.name
+    ])
+    .apply(([endpoint, certificateAuthority, name]) => {
+      const userdata = `#!/bin/bash
 set -o xtrace
 /etc/eks/bootstrap.sh --apiserver-endpoint "${endpoint}" --b64-cluster-ca "${certificateAuthority.data}" "${name}"
 `;
-    var buffer1 = Buffer.from(userdata, 'ascii');
-    var base64 = buffer1.toString('base64');
-    return base64;
-  });
+      var buffer1 = Buffer.from(userdata, "ascii");
+      var base64 = buffer1.toString("base64");
+      return base64;
+    });
 }
 
-
-export function getEksAmi(eksCluster:aws.eks.Cluster){
+export function getEksAmi(eksCluster: aws.eks.Cluster) {
   return eksCluster.version.apply(version => {
     return aws.getAmi({
       mostRecent: true,
