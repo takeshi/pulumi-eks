@@ -1,7 +1,6 @@
 import * as aws from "@pulumi/aws";
 import { vpc } from "./vpc";
 
-
 export const clusterMasterSG = new aws.ec2.SecurityGroup("cluster-master", {
   name: "cluster-master",
   description: "EKS cluster master security group",
